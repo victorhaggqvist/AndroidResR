@@ -16,6 +16,6 @@ setup(
         'gui_scripts': [
             'AndroidResR = AndroidResR.AndroidResR:main'
         ]
-    }
-    # install_requires=['PyQt4']
+    },
+    dowload_url = "https://github.com/victorhaggqvist/AndroidResR/tarball/1.0"
 )
