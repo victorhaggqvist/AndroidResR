@@ -5,7 +5,7 @@ A resource (icon) manager for Android apps
 ![](AndroidResR.png)
 
 ## Install
-Get PyQt
+Get PyQt4
 
     sudo apt-get install python-qt4
 
