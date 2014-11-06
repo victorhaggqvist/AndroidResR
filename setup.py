@@ -17,5 +17,5 @@ setup(
             'AndroidResR = AndroidResR.AndroidResR:main'
         ]
     },
-    dowload_url = "https://github.com/victorhaggqvist/AndroidResR/tarball/1.0"
+    dowload_url = "https://github.com/victorhaggqvist/AndroidResR/tarball/1.0.1"
 )
