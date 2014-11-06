@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='AndroidResR',
-    version='1.0',
+    version='1.0.1',
     description='A resource manager for Android',
     author='Victor Häggqvist',
     author_email='victor@hggqvst.com',
@@ -17,5 +17,5 @@ setup(
             'AndroidResR = AndroidResR.AndroidResR:main'
         ]
     },
-    dowload_url = "https://github.com/victorhaggqvist/AndroidResR/tarball/1.0.1"
+    download_url = "https://github.com/victorhaggqvist/AndroidResR/tarball/1.0.1"
 )
