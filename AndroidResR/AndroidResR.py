@@ -4,7 +4,7 @@ from os import listdir, remove
 from os.path import join, isfile
 import sys
 from shutil import copyfile
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from view.AndroidResR import Ui_MainWindow
 from util.ConfigLoader import ConfigLoader
 
@@ -35,10 +35,10 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             self.destPath.setText(self.appResFolder)
             self.scanResources()
 
+    # bind signals and stuff
     def setup(self):
-        """
-        bind signals
-        """
+        QtCore.QTextCodec.setCodecForCStrings(QtCore.QTextCodec.codecForName("utf-8"))
+
         self.setWindowTitle("AndroidResR")
         self.setWindowIcon(QtGui.QIcon("ic_launcher.png"))
         self.setFixedSize(self.size())
@@ -57,14 +57,13 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
 
         self.actionRefresh.triggered.connect(self.refresh)
         self.actionQuit.triggered.connect(self.quit)
+        self.actionAbout.triggered.connect(self.openAbout)
 
     def quit(self):
         sys.exit(0)
 
+    # open select iconset dialog
     def openSrc(self):
-        """
-        open select iconset dialog
-        """
         startdir = self.srcIconset if self.srcIconset else self.config.userHome
         openDir = QtGui.QFileDialog.getExistingDirectory(self, "Select Iconset Folder", startdir)
         if not openDir:
@@ -126,24 +125,17 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             i += 1
         return -1
 
+    # On selection change in src list
     def srcSelectionChange(self):
-        """
-        On selection change in src list
-        """
         self.currentIndex = self.srcListWidget.selectedIndexes()[0].row()
         self.previewIcon()
 
+    # On color checkbox clicked
     def colorClick(self):
-        """
-        On color checkbox clicked
-        """
         self.previewIcon()
 
+    # Preview currently selected icon
     def previewIcon(self):
-        """
-        Preview currently selected icon
-        :return:
-        """
         if self.currentIndex is None:
             return
 
@@ -176,7 +168,6 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
                 html += dip+': <span style="color:#0f0">yes</span><br>'
             else:
                 html += dip+': <span style="color:#f00">no</span><br>'
-
         html += "</body>"
         self.resultView.setHtml(html)
 
@@ -191,8 +182,8 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             except IOError:
                 os.mkdir(join(self.appResFolder, dip))
                 copyfile(fullsrc, fulldest)
-            # print fullsrc,"->",fulldest
         self.scanResources()
+        self.statusMsg("Icons copied", 10)
 
     def refresh(self):
         self.scanResources()
@@ -207,14 +198,24 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
 
         for dip in dips:
             path = join(self.appResFolder, "drawable-"+dip, icon[0])
-            # print path
             remove(path)
-        self.statusBar().showMessage("Removed "+icon[0], 10*1000)
+        self.statusMsg("Removed %s" % icon[0], 10)
         self.scanResources()
 
+    def statusMsg(self, msg, t):
+        self.statusBar().showMessage(msg, t*1000)
 
-
-
+    def openAbout(self):
+        box = QtGui.QMessageBox()
+        box.setWindowTitle("About")
+        box.setText("""
+AndroidResR
+Copyright 2014 Victor Häggqvist
+GPLv2
+https://victorhaggqvist.com
+https://github.com/victorhaggqvist/AndroidResR
+        """)
+        box.exec_()
 
 def main():
     app = QtGui.QApplication(sys.argv)
