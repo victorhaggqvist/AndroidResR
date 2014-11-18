@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding=utf-8
 import os
 from os import listdir, remove
@@ -127,8 +128,9 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
 
     # On selection change in src list
     def srcSelectionChange(self):
-        self.currentIndex = self.srcListWidget.selectedIndexes()[0].row()
-        self.previewIcon()
+        if len(self.srcListWidget.selectedIndexes())>0:
+            self.currentIndex = self.srcListWidget.selectedIndexes()[0].row()
+            self.previewIcon()
 
     # On color checkbox clicked
     def colorClick(self):
