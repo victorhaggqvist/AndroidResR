@@ -142,6 +142,22 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             return
 
         icon = join(self.searchpath, self.srcIconFiles[self.currentIndex])
+        log(icon)
+        self.setPreviewIcon(icon)
+
+    def previewDestIcon(self):
+        if self.currentIndexDest is None:
+            return
+
+        thisResource = self.appResources[self.currentIndexDest]
+        previewResolution = 'xhdpi'
+        if 'xhdpi' not in thisResource[1]:
+            previewResolution = thisResource[-1]
+
+        icon = join(self.appResFolder, 'drawable-'+previewResolution, thisResource[0])
+        self.setPreviewIcon(icon)
+
+    def setPreviewIcon(self, icon):
         color = self.getColor()
         html = '<body style="background:'+color+'"><img src="file://'+icon+'"></body>'
         self.webView.setHtml(html)
@@ -155,6 +171,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
     def destSelectionChange(self):
         self.currentIndexDest = self.destListWidget.selectedIndexes()[0].row() if len(self.destListWidget.selectedIndexes()) else None
         self.displayResInfo()
+        self.previewDestIcon()
 
     def displayResInfo(self):
         if self.currentIndexDest is None:
