@@ -106,6 +106,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         self.srcListWidget.clear()
         for f in self.srcIconFiles:
             self.srcListWidget.addItem(f)
+        self.srcListWidget.verticalScrollBar().setValue(0)
 
     # Load items in to app resources list
     def scanResources(self):
