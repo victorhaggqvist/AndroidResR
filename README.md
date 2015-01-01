@@ -1,10 +1,11 @@
-# AndroidResR
-
+AndroidResR [![Downloads](https://pypip.in/download/androidresr/badge.svg)](https://pypi.python.org/pypi/androidresr/) [![Latest Version](https://pypip.in/version/androidresr/badge.svg)](https://pypi.python.org/pypi/androidresr/)
+============
 A resource (icon) manager for Android apps
 
 ![](AndroidResR.png)
 
 ## Install
+### Debian/Ubuntu
 Get PyQt4
 
     sudo apt-get install python-qt4
@@ -13,9 +14,18 @@ Get AndroidResR from PyPi
 
     sudo pip install AndroidResR
 
+### OS X
+Get PyQt4
+
+    brew install pyqt
+
+Get AndroidResR from PyPi
+
+    pip install AndroidResR
+
 ## License
 
-    AnrdoidResR - A android resource manamgent tool
+    AnrdoidResR - A android resource management tool
     Copyright (C) 2014 Victor Häggqvist
 
     This program is free software; you can redistribute it and/or modify
