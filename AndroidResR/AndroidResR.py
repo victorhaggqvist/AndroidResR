@@ -11,6 +11,7 @@ from util.ConfigLoader import ConfigLoader
 
 
 __author__ = 'Victor Häggqvist'
+__version__ = '1.1.0'
 
 DRAWABLEDIRS = ["drawable-mdpi", "drawable-hdpi", "drawable-xhdpi", "drawable-xxhdpi", "drawable-xxxhdpi"]
 DRAWABLESHORT = ["mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"]
