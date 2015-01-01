@@ -14,6 +14,12 @@ __author__ = 'Victor Häggqvist'
 
 DRAWABLEDIRS = ["drawable-mdpi", "drawable-hdpi", "drawable-xhdpi", "drawable-xxhdpi", "drawable-xxxhdpi"]
 DRAWABLESHORT = ["mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"]
+DEBUG = True
+
+
+def log(msg):
+    if DEBUG:
+        print msg
 
 
 class Window(QtGui.QMainWindow, Ui_MainWindow):
@@ -25,6 +31,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         self.config = ConfigLoader()
         self.currentIndex = None
         self.currentIndexDest = None
+        self.searchpath = None
 
         self.srcIconset = self.config.get(self.config.SRCPATH)
         if self.srcIconset:
@@ -37,6 +44,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             self.scanResources()
 
     # bind signals and stuff
+    # noinspection PyUnresolvedReferences
     def setup(self):
         QtCore.QTextCodec.setCodecForCStrings(QtCore.QTextCodec.codecForName("utf-8"))
 
@@ -51,6 +59,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         self.colorBlack.clicked.connect(self.colorClick)
         self.webView.setHtml("Select icon to the left to preview")
         self.resultView.setStyleSheet("background:transparent")
+
         self.destListWidget.itemSelectionChanged.connect(self.destSelectionChange)
 
         self.transferIcons.clicked.connect(self.copyIcons)
@@ -66,26 +75,28 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
     # open select iconset dialog
     def openSrc(self):
         startdir = self.srcIconset if self.srcIconset else self.config.userHome
-        openDir = QtGui.QFileDialog.getExistingDirectory(self, "Select Iconset Folder", startdir)
-        if not openDir:
+        opendir = QtGui.QFileDialog.getExistingDirectory(self, "Select Iconset Folder", startdir)
+        if not opendir:
             return
 
-        self.srcPath.setText(openDir)
-        self.srcIconset = str(openDir)
+        self.srcPath.setText(opendir)
+        self.srcIconset = str(opendir)
 
-        self.config.set(self.config.SRCPATH, openDir)
+        self.config.set(self.config.SRCPATH, opendir)
         self.populateSrcList()
 
+    # Open select app resources dialog
     def openDest(self):
-        openDir = QtGui.QFileDialog.getExistingDirectory(self, "Select App's res folder", self.config.userHome)
-        if not openDir:
+        opendir = QtGui.QFileDialog.getExistingDirectory(self, "Select App's res folder", self.config.userHome)
+        if not opendir:
             return
 
-        self.destPath.setText(openDir)
-        self.appResFolder = str(openDir)
-        self.config.set(self.config.DESTPATH, openDir)
+        self.destPath.setText(opendir)
+        self.appResFolder = str(opendir)
+        self.config.set(self.config.DESTPATH, opendir)
         self.scanResources()
 
+    # Load items in to source list
     def populateSrcList(self):
         self.searchpath = join(self.srcIconset, DRAWABLEDIRS[2])
 
@@ -96,10 +107,11 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         for f in self.srcIconFiles:
             self.srcListWidget.addItem(f)
 
+    # Load items in to app resources list
     def scanResources(self):
         self.appResources = []
         for res in DRAWABLEDIRS:
-            resdir = join(self.appResFolder,res)
+            resdir = join(self.appResFolder, res)
             resShort = res.split("-")[1]
             try:
                 files = listdir(resdir)
@@ -118,6 +130,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         for d in self.appResources:
             self.destListWidget.addItem(d[0])
 
+    # Get item index in app resources list by file name
     def getAppResourceIndex(self, file):
         i = 0
         for r in self.appResources:
@@ -128,13 +141,24 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
 
     # On selection change in src list
     def srcSelectionChange(self):
-        if len(self.srcListWidget.selectedIndexes())>0:
+        if len(self.srcListWidget.selectedIndexes()) > 0:
             self.currentIndex = self.srcListWidget.selectedIndexes()[0].row()
             self.previewIcon()
 
     # On color checkbox clicked
     def colorClick(self):
-        self.previewIcon()
+        self.setPreview(self.currentPreviewIcon)
+
+    # Update webview
+    def setPreview(self, icon):
+        self.currentPreviewIcon = icon
+        file = icon.split('/')[-1]
+        if 'white' in file:
+            self.colorBlack.setChecked(True)
+        elif 'black' in file:
+            self.colorWhite.setChecked(True)
+
+        self.webView.setHtml('<body style="background:'+self.getColor()+'"><img src="file://'+icon+'"></body>')
 
     # Preview currently selected icon
     def previewIcon(self):
@@ -142,9 +166,9 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             return
 
         icon = join(self.searchpath, self.srcIconFiles[self.currentIndex])
-        log(icon)
-        self.setPreviewIcon(icon)
+        self.setPreview(icon)
 
+    # Setup app icon to preview
     def previewDestIcon(self):
         if self.currentIndexDest is None:
             return
@@ -155,13 +179,9 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
             previewResolution = thisResource[-1]
 
         icon = join(self.appResFolder, 'drawable-'+previewResolution, thisResource[0])
-        self.setPreviewIcon(icon)
+        self.setPreview(icon)
 
-    def setPreviewIcon(self, icon):
-        color = self.getColor()
-        html = '<body style="background:'+color+'"><img src="file://'+icon+'"></body>'
-        self.webView.setHtml(html)
-
+    # Get colors by radio buttons
     def getColor(self):
         if self.colorWhite.isChecked():
             return '#fff'
@@ -224,17 +244,19 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
     def statusMsg(self, msg, t):
         self.statusBar().showMessage(msg, t*1000)
 
-    def openAbout(self):
+    @staticmethod
+    def openAbout():
         box = QtGui.QMessageBox()
         box.setWindowTitle("About")
         box.setText("""
-AndroidResR
-Copyright 2014 Victor Häggqvist
+AndroidResR %s
+Copyright © 2014-2015 Victor Häggqvist
 GPLv2
 https://victorhaggqvist.com
 https://github.com/victorhaggqvist/AndroidResR
-        """)
+        """%__version__)
         box.exec_()
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
