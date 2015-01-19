@@ -2,7 +2,7 @@ AndroidResR [![Downloads](https://pypip.in/download/androidresr/badge.svg)](http
 ============
 A resource (icon) manager for Android apps.
 
-AndroidResR is maintained under Python 2.7 but in [v1.1.1](https://github.com/victorhaggqvist/AndroidResR/releases/tag/v1.1.1) some fixes was done to make is run under Python 3. Though later releases my not run under Python 3.
+AndroidResR is maintained under Python 2.7 but in [v1.1.1](https://github.com/victorhaggqvist/AndroidResR/releases/tag/v1.1.1) some fixes was done to make is run under Python 3. Though later releases may not run under Python 3.
 
 ![](AndroidResR.png)
 
