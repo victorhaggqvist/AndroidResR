@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='AndroidResR',
-    version='1.1.0',
+    version='1.1.1',
     description='A resource manager for Android',
     author='Victor Häggqvist',
     author_email='victor@hggqvst.com',

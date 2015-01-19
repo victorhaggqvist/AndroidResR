@@ -26,7 +26,7 @@ Get AndroidResR from PyPi
 ## License
 
     AnrdoidResR - A android resource management tool
-    Copyright (C) 2014 Victor Häggqvist
+    Copyright (C) 2014 -2015 Victor Häggqvist
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

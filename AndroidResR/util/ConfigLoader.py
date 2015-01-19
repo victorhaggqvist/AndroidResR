@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 from os.path import expanduser, join, isfile
 
 __author__ = 'victor'
@@ -11,7 +11,7 @@ class ConfigLoader():
     def __init__(self):
         self.userHome = expanduser("~")
         self.CONFIG_FILE = join(self.userHome, '.androidresr')
-        self.config = ConfigParser.RawConfigParser(allow_no_value=True)
+        self.config = configparser.RawConfigParser(allow_no_value=True)
 
         if not isfile(self.CONFIG_FILE):
             self.initFile()
@@ -30,7 +30,7 @@ class ConfigLoader():
     def get(self, key):
         try:
             return self.config.get("general", key)
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             return None
 
     def initFile(self):
